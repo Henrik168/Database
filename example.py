@@ -17,11 +17,12 @@ def main():
     sqlite.get_master_data()
 
     sqlite.insert(table_name="employees", firstname="Henrik", lastname="Schletter", age=34)
+    sqlite.insert(table_name="employees", firstname="Henrik", lastname="Mustermann", age=99)
     sqlite.insert(table_name="employees", firstname="Max", lastname="Mustermann", age=99)
     sqlite.insert(table_name="employees", firstname="Hans", lastname="Maier", age=60)
 
-    for line in sqlite.select(table_name="employees"):
-        print(line)
+    for line in sqlite.select(table_name="employees", firstname="Henrik", lastname="Schletter"):
+        logger.info(line)
 
 
 if __name__ == '__main__':

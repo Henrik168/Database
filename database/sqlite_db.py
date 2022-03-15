@@ -1,6 +1,5 @@
 import sqlite3
 import logging
-from typing import Generator
 
 from database.db import DB
 
@@ -51,6 +50,7 @@ class SQLite(DB):
                 logger.info(f"Created Table '{table_name}' in database '{self.file_path}'. ")
             except sqlite3.OperationalError as e:
                 logger.warning(f"{e} in database '{self.file_path}'")
+                logger.warning(sql_statement)
 
     def add_column(self, table_name: str, column: str, data_type: str) -> None:
         sql_statement = f"ALTER TABLE {table_name} ADD COLUMN {column} {data_type};"
@@ -61,6 +61,7 @@ class SQLite(DB):
                 logger.info(f"Added column '{column}' to '{table_name}' in database '{self.file_path}'. ")
             except sqlite3.OperationalError as e:
                 logger.warning(f"{e} in database '{self.file_path}'")
+                logger.warning(sql_statement)
 
     def insert(self, table_name: str, **kwargs: any) -> None:
         keywords = ", ".join(str(keyword) for keyword in kwargs.keys())
@@ -82,16 +83,23 @@ class SQLite(DB):
     def update(self, table_name: str, where: str, kwargs: any) -> None:
         pass
 
-    def select(self, table_name: str, where: str = None) -> list:
-        sql_statement = f"SELECT * FROM {table_name};"
+    def select(self, table_name: str, **kwargs: str) -> list:
+        values = None
+        sql_statement = f"SELECT * FROM {table_name}"
+
+        if kwargs:
+            conditions = " AND ".join(str(key) + "=? " for key in kwargs.keys())
+            values = [str(value) for value in kwargs.values()]
+            sql_statement += " WHERE " + conditions + ";"
 
         with SQLiteCM(self.file_path) as cursor:
             try:
-                cursor.execute(sql_statement)
+                cursor.execute(sql_statement, values)
                 logger.info(f"Selected from '{table_name}' in database '{self.file_path}'. ")
                 return [dict(row) for row in cursor.fetchall()]
             except sqlite3.OperationalError as e:
                 logger.warning(f"{e} in database '{self.file_path}'")
+                logger.warning(sql_statement)
 
     def get_master_data(self):
         with SQLiteCM(self.file_path) as cursor:
