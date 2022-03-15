@@ -1,6 +1,10 @@
 #configuration
 *.config
 
+#databas
+/db/
+*.db
+
 # Testdata
 /testdata/
 
