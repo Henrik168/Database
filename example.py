@@ -21,7 +21,7 @@ def main():
     sqlite.insert(table_name="employees", firstname="Max", lastname="Mustermann", age=99)
     sqlite.insert(table_name="employees", firstname="Hans", lastname="Maier", age=60)
 
-    for line in sqlite.select(table_name="employees", firstname="Henrik", lastname="Schletter"):
+    for line in sqlite.select(table_name="employees", where="age > 40"):
         logger.info(line)
 
 

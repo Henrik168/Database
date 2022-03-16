@@ -62,6 +62,7 @@ class SQLite(DB):
             except sqlite3.OperationalError as e:
                 logger.warning(f"{e} in database '{self.file_path}'")
                 logger.warning(sql_statement)
+                raise ValueError(e)
 
     def insert(self, table_name: str, **kwargs: any) -> None:
         keywords = ", ".join(str(keyword) for keyword in kwargs.keys())
@@ -76,6 +77,11 @@ class SQLite(DB):
             except sqlite3.OperationalError as e:
                 logger.warning(f"{e} in database '{self.file_path}'")
                 logger.warning(sql_statement)
+                raise ValueError(e)
+            except sqlite3.IntegrityError as e:
+                logger.warning(f"{e} in database '{self.file_path}'")
+                logger.warning(sql_statement)
+                raise ValueError(e)
 
     def delete(self, table_name: str, where: str) -> None:
         pass
@@ -83,23 +89,21 @@ class SQLite(DB):
     def update(self, table_name: str, where: str, kwargs: any) -> None:
         pass
 
-    def select(self, table_name: str, **kwargs: str) -> list:
-        values = None
+    def select(self, table_name: str, where: str = None) -> list:
         sql_statement = f"SELECT * FROM {table_name}"
 
-        if kwargs:
-            conditions = " AND ".join(str(key) + "=? " for key in kwargs.keys())
-            values = [str(value) for value in kwargs.values()]
-            sql_statement += " WHERE " + conditions + ";"
+        if where:
+            sql_statement += " WHERE " + where + ";"
 
         with SQLiteCM(self.file_path) as cursor:
             try:
-                cursor.execute(sql_statement, values)
+                cursor.execute(sql_statement)
                 logger.info(f"Selected from '{table_name}' in database '{self.file_path}'. ")
                 return [dict(row) for row in cursor.fetchall()]
             except sqlite3.OperationalError as e:
                 logger.warning(f"{e} in database '{self.file_path}'")
                 logger.warning(sql_statement)
+                raise ValueError(e)
 
     def get_master_data(self):
         with SQLiteCM(self.file_path) as cursor:
