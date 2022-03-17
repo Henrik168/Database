@@ -14,7 +14,7 @@ class Model:
         try:
             for line in self.db.select(table_name=table_name, where=where):
                 logger.debug(line)
-                result.append(str(line))
+                result.append(line)
 
             logger.info(f"returning '{len(result)}' Lines")
             return result

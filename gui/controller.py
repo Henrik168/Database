@@ -10,12 +10,11 @@ class Controller:
         self.view = view
         pass
 
-    def search(self, table_name:str, where: str) -> None:
+    def search(self, table_name: str, where: str) -> None:
         try:
             data = self.model.search(table_name=table_name, where=where)
             self.view.show_success(f"Returning {len(data)} Lines.")
+            self.view.main.show_results(data)
 
         except ValueError as e:
             self.view.show_error(e)
-
-

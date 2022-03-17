@@ -1,6 +1,8 @@
 import logging
 import tkinter as tk
 
+import gui.table
+
 logger = logging.getLogger(name="CustomLogger")
 DEBUG: bool = True
 
@@ -57,9 +59,8 @@ class ToolBar(tk.Frame):
             self.config(bg="green")
         self.pack(side=tk.TOP, fill=tk.X, expand=False)
 
-        # Add Employees button
         self.add_employee_button = tk.Button(self, text='add Employee', command=self.add_employee)
-        self.add_employee_button.grid(row=1, column=1, padx=10, sticky=tk.W)
+        self.add_employee_button.pack(side=tk.RIGHT, pady=10, padx=10)
 
     def set_controller(self, controller):
         # ToDo: How to add Typehints?
@@ -77,18 +78,24 @@ class Main(tk.Frame):
             self.config(bg="yellow")
         self.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
+        self.frame_top = tk.Frame(self)
         # label
-        self.label = tk.Label(self, text='Search for employees:')
+        self.label = tk.Label(self.frame_top, text='Search for employees:')
         self.label.grid(row=1, column=0)
 
         # search entry
         self.search_var = tk.StringVar()
-        self.search_entry = tk.Entry(self, textvariable=self.search_var, width=30)
+        self.search_entry = tk.Entry(self.frame_top, textvariable=self.search_var, width=30)
         self.search_entry.grid(row=1, column=1, sticky=tk.NSEW)
 
         # search button
-        self.save_button = tk.Button(self, text='Search', command=self.search_button_clicked)
+        self.save_button = tk.Button(self.frame_top, text='Search', command=self.search_button_clicked)
         self.save_button.grid(row=1, column=3, padx=10)
+
+        self.frame_top.pack()
+
+        self.table = gui.table.Table(self)
+        self.table.pack(side=tk.TOP, anchor=tk.NW)
 
     def set_controller(self, controller):
         # ToDo: How to add Typehints?
@@ -98,6 +105,11 @@ class Main(tk.Frame):
         """Handle Button Click Event"""
         if self.controller:
             self.controller.search(table_name="employees", where=self.search_var.get())
+
+    def show_results(self, data: list[dict]):
+        self.table.draw_table(data=data)
+
+
 
 
 class View(tk.Frame):
@@ -136,3 +148,4 @@ class View(tk.Frame):
     def hide_message(self):
         """Hide the message"""
         self.statusbar.message_label['text'] = ''
+
