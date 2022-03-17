@@ -4,7 +4,7 @@ import tkinter as tk
 import gui.table
 
 logger = logging.getLogger(name="CustomLogger")
-DEBUG: bool = True
+DEBUG: bool = False
 
 
 class StatusBar(tk.Frame):
@@ -95,7 +95,7 @@ class Main(tk.Frame):
         self.frame_top.pack()
 
         self.table = gui.table.Table(self)
-        self.table.pack(side=tk.TOP, anchor=tk.NW)
+        self.table.pack(side="top", fill="both", expand=True)
 
     def set_controller(self, controller):
         # ToDo: How to add Typehints?

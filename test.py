@@ -1,6 +1,8 @@
 import database.sqlite_db
 import CustomLogger
 import path
+import names
+import random
 
 logger = CustomLogger.getLogger(name="CustomLogger")
 logger.setLevel(20)
@@ -16,10 +18,9 @@ def main():
 
     sqlite.get_master_data()
 
-    sqlite.insert(table_name="employees", firstname="Henrik", lastname="Schletter", age=34)
-    sqlite.insert(table_name="employees", firstname="Henrik", lastname="Mustermann", age=99)
-    sqlite.insert(table_name="employees", firstname="Max", lastname="Mustermann", age=99)
-    sqlite.insert(table_name="employees", firstname="Hans", lastname="Maier", age=60)
+    for _ in range(100):
+        sqlite.insert(table_name="employees", firstname=names.get_first_name(), lastname=names.get_last_name(),
+                      age=random.randint(20, 100))
 
     for line in sqlite.select(table_name="employees", where="age > 40"):
         logger.info(line)
