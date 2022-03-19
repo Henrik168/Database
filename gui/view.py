@@ -2,6 +2,7 @@ import logging
 import tkinter as tk
 
 import gui.table
+import gui.treeview
 
 logger = logging.getLogger(name="CustomLogger")
 DEBUG: bool = False
@@ -94,8 +95,9 @@ class Main(tk.Frame):
 
         self.frame_top.pack()
 
-        self.table = gui.table.Table(self)
-        self.table.pack(side="top", fill="both", expand=True)
+        #self.table = gui.table.Table(self)
+        #self.table.pack(side="top", fill="both", expand=True)
+        self.table = gui.treeview.TreeView(self)
 
     def set_controller(self, controller):
         # ToDo: How to add Typehints?
@@ -108,8 +110,6 @@ class Main(tk.Frame):
 
     def show_results(self, data: list[dict]):
         self.table.draw_table(data=data)
-
-
 
 
 class View(tk.Frame):
@@ -148,4 +148,3 @@ class View(tk.Frame):
     def hide_message(self):
         """Hide the message"""
         self.statusbar.message_label['text'] = ''
-
