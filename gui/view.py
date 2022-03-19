@@ -95,13 +95,12 @@ class Main(tk.Frame):
 
         self.frame_top.pack()
 
-        #self.table = gui.table.Table(self)
-        #self.table.pack(side="top", fill="both", expand=True)
-        self.table = gui.treeview.TreeView(self)
+        self.table = gui.treeview.TreeView(self, controller=self.controller)
 
     def set_controller(self, controller):
         # ToDo: How to add Typehints?
         self.controller = controller
+        self.table.controller = controller
 
     def search_button_clicked(self):
         """Handle Button Click Event"""

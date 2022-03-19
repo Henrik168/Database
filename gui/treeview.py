@@ -1,17 +1,17 @@
 import tkinter as tk
 from tkinter import ttk
-from tkinter import messagebox
 import logging
 
 logger = logging.getLogger(name="CustomLogger")
 
 
 class TreeView(tk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, controller):
         super().__init__(parent)
         self.tree = ttk.Treeview(self)
+        self.controller = controller
 
-    def draw_table(self, data: list[dict], column_width: int = 10):
+    def draw_table(self, data: list[dict]) -> None:
 
         for widgets in self.tree.winfo_children():
             widgets.destroy()
@@ -20,23 +20,24 @@ class TreeView(tk.Frame):
         if not data:
             return
         columns = [column for column in data[0].keys()]
-        self.tree = ttk.Treeview(self, columns=columns,show="headings")
+        self.tree = ttk.Treeview(self, columns=columns, show="tree headings")
 
         # format columns
-        self.tree.column(column="#0", anchor=tk.CENTER, width=120, minwidth=25)
+        self.tree.column(column="#0", anchor=tk.CENTER, width=10, minwidth=10)
         for column in data[0].keys():
             self.tree.column(column=column, anchor=tk.CENTER, width=120, minwidth=25)
 
         # format headings
-        self.tree.heading(column="#0", text="Expand", anchor=tk.CENTER)
+        self.tree.heading(column="#0", text="", anchor=tk.CENTER)
         for column in data[0].keys():
             self.tree.heading(column=column, text=column, anchor=tk.CENTER)
 
         # add Data to tree view
         for id_row, row in enumerate(data):
             values = [value for value in row.values()]
-            self.tree.insert(parent='', index=tk.END, iid=str(id_row), text="Parent", values=values)
-            self.tree.insert(parent=str(id_row), index=tk.END, iid=str(id_row + 100), text="Parent", values=values)
+            self.tree.insert(parent='', index=tk.END, iid=str(id_row), text="", values=values)
+            if (id_row % 2) == 0:
+                self.tree.insert(parent=str(id_row), index=tk.END, iid=str(id_row + 100), text="Parent", values=values)
 
         # Bind Click Event
         self.tree.bind('<<TreeviewSelect>>', self.item_selected)
@@ -53,8 +54,6 @@ class TreeView(tk.Frame):
     def item_selected(self, event):
         for selected_item in self.tree.selection():
             item = self.tree.item(selected_item)
-            record =[str(item) for item in item["values"]]
-            # show a message
+            record = [str(item) for item in item["values"]]
             logger.info(f"Selected Dataset: {record}")
-            messagebox.showinfo(title='Information', message=','.join(record))
-
+            self.controller.show_dataset(table_name="Test", dataset=record)

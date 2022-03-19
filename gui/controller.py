@@ -18,3 +18,6 @@ class Controller:
 
         except ValueError as e:
             self.view.show_error(e)
+
+    def show_dataset(self, table_name, dataset: list) -> None:
+        self.view.show_success(message=','.join(dataset))
