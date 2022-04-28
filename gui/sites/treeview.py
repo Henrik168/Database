@@ -8,17 +8,22 @@ logger = logging.getLogger(name="CustomLogger")
 class TreeView(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
-        self.tree = ttk.Treeview(self)
+        self.parent = parent
         self.controller = controller
+        self.tree = None
 
     def draw_table(self, data: list[dict]) -> None:
 
-        for widgets in self.tree.winfo_children():
-            widgets.destroy()
-        self.tree.pack_forget()
+        """ Seems not have a effect"""
+        #if self.tree:
+            #for widgets in self.tree.winfo_children():
+                #widgets.destroy()
+            #self.tree.pack_forget()
 
         if not data:
+            self.pack_forget()
             return
+
         columns = [column for column in data[0].keys()]
         self.tree = ttk.Treeview(self, columns=columns, show="tree headings")
 

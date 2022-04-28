@@ -1,8 +1,6 @@
 import logging
 import tkinter as tk
-
-import gui.table
-import gui.treeview
+from gui.sites.employees import Employees
 
 logger = logging.getLogger(name="CustomLogger")
 DEBUG: bool = False
@@ -28,10 +26,10 @@ class StatusBar(tk.Frame):
 class NavBar(tk.Frame):
     def __init__(self, parent: tk.Misc):
         super().__init__(master=parent)
+        self.parent = parent
         self.controller = None
         if DEBUG:
             self.config(bg="blue")
-        self.pack(side=tk.LEFT, fill=tk.Y, expand=False)
 
         # Employees button
         self.employees_button = tk.Button(self, text='Employees', command=self.show_employees)
@@ -41,12 +39,14 @@ class NavBar(tk.Frame):
         self.settings_button = tk.Button(self, text='Settings', command=self.show_settings)
         self.settings_button.grid(row=2, column=1, pady=100)
 
+        self.pack(side=tk.LEFT, fill=tk.Y, expand=False)
+
     def set_controller(self, controller):
         # ToDo: How to add Typehints?
         self.controller = controller
 
     def show_employees(self):
-        pass
+        self.controller.show_employees()
 
     def show_settings(self):
         pass
@@ -74,41 +74,19 @@ class ToolBar(tk.Frame):
 class Main(tk.Frame):
     def __init__(self, parent: tk.Misc):
         super().__init__(master=parent)
+        self.parent = parent
         self.controller = None
+        self.main_frame = None
         if DEBUG:
             self.config(bg="yellow")
         self.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
-        self.frame_top = tk.Frame(self)
-        # label
-        self.label = tk.Label(self.frame_top, text='Search for employees:')
-        self.label.grid(row=1, column=0)
-
-        # search entry
-        self.search_var = tk.StringVar()
-        self.search_entry = tk.Entry(self.frame_top, textvariable=self.search_var, width=30)
-        self.search_entry.grid(row=1, column=1, sticky=tk.NSEW)
-
-        # search button
-        self.save_button = tk.Button(self.frame_top, text='Search', command=self.search_button_clicked)
-        self.save_button.grid(row=1, column=3, padx=10)
-
-        self.frame_top.pack()
-
-        self.table = gui.treeview.TreeView(self, controller=self.controller)
-
     def set_controller(self, controller):
         # ToDo: How to add Typehints?
         self.controller = controller
-        self.table.controller = controller
 
-    def search_button_clicked(self):
-        """Handle Button Click Event"""
-        if self.controller:
-            self.controller.search(table_name="employees", where=self.search_var.get())
-
-    def show_results(self, data: list[dict]):
-        self.table.draw_table(data=data)
+    def show_employees(self):
+        self.main_frame = Employees(self, self.controller)
 
 
 class View(tk.Frame):
