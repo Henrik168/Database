@@ -1,7 +1,7 @@
 import logging
 from database.sqlite_db import SQLite
 
-logger = logging.getLogger(name="CustomLogger")
+log = logging.getLogger()
 
 
 class Model:
@@ -13,10 +13,10 @@ class Model:
         result = []
         try:
             for line in self.db.select(table_name=table_name, where=where):
-                logger.debug(line)
+                log.debug(line)
                 result.append(line)
 
-            logger.info(f"returning '{len(result)}' Lines")
+            log.info(f"returning '{len(result)}' Lines")
             return result
         except ValueError as e:
             raise ValueError(e)

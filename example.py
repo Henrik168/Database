@@ -3,8 +3,8 @@ import path
 from database.sqlite_db import SQLite
 from gui.application import Application
 
-logger = CustomLogger.getLogger(name="CustomLogger")
-logger.setLevel(20)
+logger = CustomLogger.getLogger()
+logger.setLevel(10)
 
 
 def main():

@@ -2,7 +2,7 @@ import logging
 import tkinter as tk
 from gui.sites.employees import Employees
 
-logger = logging.getLogger(name="CustomLogger")
+log = logging.getLogger()
 DEBUG: bool = False
 
 

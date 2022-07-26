@@ -1,6 +1,6 @@
 import logging
 
-logger = logging.getLogger(name="CustomLogger")
+log = logging.getLogger()
 
 
 class Controller:
