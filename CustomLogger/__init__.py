@@ -30,7 +30,7 @@ def getLogger(name: str = "",
     ch.setLevel(level)
 
     # Thread to change Logfile Name at Midnight
-    TimedFileHandler(logger, log_path, name)
+    TimedFileHandler(logger, log_path)
 
     logger.info(f"Logger started. Write Logfile to: {file_path}")
     return logger

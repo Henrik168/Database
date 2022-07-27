@@ -23,13 +23,12 @@ def calc_sleep(current_time: datetime) -> int:
 
 
 class TimedFileHandler(Thread):
-    def __init__(self, logger: logging.Logger, log_path: str, name: str):
+    def __init__(self, logger: logging.Logger, log_path: str):
         super(TimedFileHandler, self).__init__()
         self.daemon = True
 
         self.logger = logger
         self.log_path = log_path
-        self.name = name
         self.sleep_time = calc_sleep(datetime.now())
 
         self.start()
@@ -38,7 +37,7 @@ class TimedFileHandler(Thread):
         while True:
             self.logger.info(f"Timed File Handler rollover in '{self.sleep_time}' seconds.")
             sleep(self.sleep_time)
-            file_path = get_path(self.name, self.log_path)
+            file_path = get_path(self.logger.name, self.log_path)
             fh = logging.FileHandler(file_path)
             fh.setFormatter(logging.Formatter(FORMAT, "%d.%m.%Y %H:%M:%S"))
             self.logger.addHandler(fh)
